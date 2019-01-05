@@ -6,6 +6,8 @@ A simple example to trigger Angularjs services from Javascript
 
 Just open the index.html in Browser
 
+### fiddle
+https://jsfiddle.net/1s70qzar
 
 ## References:
 
