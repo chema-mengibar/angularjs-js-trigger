@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de-DE">
+<meta charset="UTF-8">
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/d3js/5.7.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/de.js"></script> -->
+
+<head>
+  <style>
+    html, body{  margin:0;   padding:20px;  }
+    .app__my-directive {  border: 1px dotted grey; padding:10px; width:250px; height:50px;  }
+  </style>
+</head>
+
+<body ng-app="myApp" material-directive >
+
+  <!-- <my-directive></my-directive> -->
+  <!-- <div ng-controller="myCtrl"> </div> -->
+
+  <button onclick="myJsFct()">Click me, I´m not angular</button>
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+  // Anglarjs trigger method: Option A - rootScope digest
+  function callAngService(){
+    var injector = angular.element(document.querySelector('[ng-app]')).injector();
+    // var injector = angular.element(document).injector()
+    var refService = injector.get('myService');
+    var $rootScope = injector.get('$rootScope');
+    refService.alert();
+    $rootScope.$digest();
+  }
+
+  // Anglarjs trigger method: Option B - scope method
+  function callAngDirectiveScope(){
+    var element = angular.element(document.querySelector('[material-directive]'))
+    var scope = element.scope();
+    scope.callMaterial()
+  }
+
+  // Button function
+  function myJsFct(){
+    console.log("myJsFct");
+    //callAngService(); //Option A
+    callAngDirectiveScope(); //Option B
+  }
+
+  //window.onload = function() { }
+
+</script>
+
+
+<script type="text/javascript">
+  // ##############################  ANGULARJS APP #######################################
+
+  var app = angular.module("myApp", ['ngMaterial']);
+
+  app.service("myService", function( $mdDialog ) {
+    this.alert = function( ){
+      alert = $mdDialog.alert({
+       title: 'Attention',
+       textContent: 'This is an example of how easy dialogs can be!',
+       ok: 'Close'
+      });
+
+      $mdDialog
+       .show( alert )
+       .finally(function() {
+         alert = undefined;
+       });
+    }
+  });
+
+
+  // app.controller("myCtrl", function( $scope, myService ) {
+  //   var _ctrl = this;
+  //   $scope.firstName = "John";
+  //   $scope.lastName = "Doe";
+  //   _ctrl.ref = 1500;
+  //   //myService.alert()
+  // });
+  //
+  // app.directive("myDirective", function() {
+  //   return {
+  //     restrict : "E",
+  //     templateUrl:'./myDirectiveTemplate.html',
+  //     //template : '<h1>Hello {{ firstName + " " + lastName }} !</h1> ref: {{mc.ref}}',
+  //     controller: 'myCtrl',
+  //     controllerAs: 'mc',
+  //     scope : {},
+  //     bindToController: true
+  //   };
+  // });
+
+
+  app.directive("materialDirective", function() {
+    return {
+      restrict : "A",
+      controller: function( $scope, myService ){
+        $scope.callMaterial = function() {
+          console.log("Called Method from atributte-directive controller")
+          myService.alert()
+        };
+      },
+      scope : true,
+      link: function(scope ) {
+        //!! myService.alert error is not a function
+      }
+    };
+  });
+
+  //--------------- INIT APP
+
+  app.config(function(){   console.log("APP config")  })
+  app.run(function(){    console.log("APP run")  })
+
+</script>
